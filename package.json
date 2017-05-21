@@ -1,0 +1,21 @@
+{
+  "name": "health-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "nodemon src/server.js | bunyan -o short"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "bunyan": "^1.8.10",
+    "redis": "^2.7.1",
+    "restify": "^4.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "nodemon": "^1.11.0"
+  }
+}
