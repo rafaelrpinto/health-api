@@ -1,6 +1,8 @@
 # Overview
 Node.js api with methods for searching health facilities based on government data. The api accesses the Redis database created by [health-db](https://github.com/rafaelrpinto/health-db).
 
+By using Redis as our database we can take advantage of it's speed to create cost-effective apis / apps that can be accessed by a large number of clients requiring as few resources as possible. See more in [How fast is redis?](https://redis.io/topics/benchmarks)
+
 ## Routes
 
 - GET /facility/types
