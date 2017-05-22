@@ -46,4 +46,13 @@ RedisRepository.getServices = () => {
   return redisClient.zrangeAsync('service_list', 0, -1);
 }
 
+/**
+ * Retrieves all the cities of a state.
+ * @return {Promise} Promise to resolve an array of cities.
+ */
+RedisRepository.getCities = (state) => {
+  return redisClient.zrangeAsync(`cities:${state}`, 0, -1);
+}
+
+
 module.exports = RedisRepository;
