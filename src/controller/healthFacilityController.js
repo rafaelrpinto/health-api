@@ -74,6 +74,23 @@ HealthFacilityController.getFacility = async(req, res, next) => {
   }
 }
 
-//TODO geo search
+/**
+ * Finds the nearest facilities from a specific coordinate.
+ */
+HealthFacilityController.getNearestFacilities = async(req, res, next) => {
+  try {
+    if (isNaN(req.params.lat) || isNaN(req.params.long) || isNaN(req.params.page)) {
+      return res.send(400, 'Invalid parameters.');
+    }
+
+    let facilities = await repository.getNearestFacilities(req.params.lat, req.params.long, req.params.page);
+    res.json(facilities);
+  } catch (err) {
+    res.send(500, 'Internal error');
+    log.error(`Error retrieving facility by location`, {err: err});
+  } finally {
+    next();
+  }
+}
 
 module.exports = HealthFacilityController;

@@ -151,3 +151,17 @@ Ex: `/service/1/RJ/37/1`
   "rows": [...]
 }
 ```
+
+- GET /facility/nearest/{lat}/{long}/{page}
+
+Retrieves nearest facilities from the provided coordinates. All the requests must inform a page.
+Ex: `/facility/nearest/-22.933380/-43.244348/1`
+
+```javascript
+{
+  "totalCount": 9,
+  "page": "1",
+  "pageSize": 10,
+  "rows": [...]
+}
+```

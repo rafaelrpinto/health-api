@@ -1,6 +1,8 @@
 let redis = require("redis");
 let bunyan = require("bunyan");
 let Promise = require("bluebird");
+// project deps
+let redisScripts = require('../lua/redisScripts');
 
 // Max items per page
 const PAGE_SIZE = 10;
@@ -90,7 +92,68 @@ RedisRepository.getFacility = async(id) => {
   return hash2model(facilityHash);
 }
 
-// ############ private functions ##############3
+/**
+ * Retrieves the facilities closest to the informed coordinates.
+ *
+ * FIXME: This pagination is not very effective because redis has to go through all
+ * elements of the set. But currently the geaoradius command does not have pagination.
+ *
+ * So this method at least does the whole processing in a single request and saves bandwidth
+ * by enforcing pagination.
+ *
+ * @param  {Number} latitude  Reference latitude.
+ * @param  {Number} longitude Reference longitude.
+ * @param  {Integer} page      Target page.
+ * @return {Promise}           Promise to resolve the facilities according to the parameters.
+ */
+RedisRepository.getNearestFacilities = async(latitude, longitude, page) => {
+  // pagination range
+  let interval = page2interval(page);
+
+  //script keys / arguments
+  let args = [1].concat("geo_facilities", [
+    longitude,
+    latitude,
+    5,
+    "km",
+    interval.start,
+    interval.end
+  ]);
+  args.unshift(redisScripts['nearestFacilties']);
+
+  // executes the script on redis
+  let result = await redisClient.send_commandAsync('eval', args);
+
+  let count = result[0];
+  let rows = result[1];
+
+  if (rows) {
+    // converts the rows
+    rows = result[1].map((row) => {
+      return hash2model(replyToObject(row));
+    });
+  }
+
+  return buildPaginatedResponse(count, page, rows);
+}
+
+// ############ private functions ##############
+
+/*
+ * Transforms a redis response into a json object. Copied from node_redis.
+ * @see https://github.com/NodeRedis/node_redis/blob/master/lib/utils.js
+ */
+function replyToObject(reply) {
+  // The reply might be a string or a buffer if this is called in a transaction (multi)
+  if (reply.length === 0 || !(reply instanceof Array)) {
+    return null;
+  }
+  var obj = {};
+  for (var i = 0; i < reply.length; i += 2) {
+    obj[reply[i].toString('binary')] = reply[i + 1];
+  }
+  return obj;
+}
 
 /**
  * Template method for retrieving paginated facilities.
