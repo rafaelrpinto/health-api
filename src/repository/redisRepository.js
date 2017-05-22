@@ -2,6 +2,7 @@ let redis = require("redis");
 let bunyan = require("bunyan");
 let Promise = require("bluebird");
 
+// Max items per page
 const PAGE_SIZE = 10;
 
 // async redis client
@@ -61,10 +62,43 @@ RedisRepository.getCities = (state) => {
  * @param  {Integer} serviceId Id of the target service.
  * @param  {String} state     Target state.
  * @param  {Integer} page     Page to be retrieved.
- * @return {Promise} Promise to resolve an array of facilities id's.
+ * @return {Promise} Promise to resolve a peginated facilities response.
  */
-RedisRepository.getFacilitiesByServiceAndState = async(serviceId, state, page) => {
-  let key = `service:${serviceId}:${state}`;
+RedisRepository.getFacilitiesByServiceAndState = (serviceId, state, page) => {
+  return getFacilities(`service:${serviceId}:${state}`, page);
+}
+
+/**
+ * Retrieves all the health fecilities that provide a service on a state/city.
+ * @param  {Integer} serviceId Id of the target service.
+ * @param  {String} state     Target state.
+ * @param  {String} cityId     Target city id.
+ * @param  {Integer} page     Page to be retrieved.
+ * @return {Promise} Promise to resolve a peginated facilities response.
+ */
+RedisRepository.getFacilitiesByServiceStateAndCity = (serviceId, state, cityId, page) => {
+  return getFacilities(`service:${serviceId}:${state}:${cityId}`, page);
+}
+
+/**
+ * Retrieves the details of a facility by it's id.
+ * @param  {Integer} id Facilities id.
+ * @return {Object}    Facility object or null if not found.
+ */
+RedisRepository.getFacility = async(id) => {
+  let facilityHash = await redisClient.hgetallAsync(`facility:${id}`);
+  return hash2model(facilityHash);
+}
+
+// ############ private functions ##############3
+
+/**
+ * Template method for retrieving paginated facilities.
+ * @param  {String} key  Target redis key.
+ * @param  {Integer} page Target page number.
+ * @return {Promise} Promise to resolve a peginated facilities response.
+ */
+async function getFacilities(key, page) {
   // pagination ranges
   let interval = page2interval(page);
 
@@ -79,7 +113,7 @@ RedisRepository.getFacilitiesByServiceAndState = async(serviceId, state, page) =
   // total ids
   let count = parseInt(result[0]);
   // Get the drtailed rows based on the ids
-  let rows = await getFacilites(result[1]);
+  let rows = await getFacilitesDetails(result[1]);
 
   return buildPaginatedResponse(count, page, rows);
 }
@@ -100,7 +134,7 @@ function buildPaginatedResponse(count, page, rows) {
  * @param  {Array} ids List of facilities ids to match the search.
  * @return {Promise}     Promise to retrieve an array of objects containing the full details of the facilites.
  */
-async function getFacilites(ids) {
+async function getFacilitesDetails(ids) {
   if (!ids || ids.length == 0) {
     return [];
   }
@@ -110,36 +144,46 @@ async function getFacilites(ids) {
 
   // get all the details on a single request
   for (let id of ids) {
-    let key = `facility:${id}`;
-    batch.hgetall(key);
+    batch.hgetall(`facility:${id}`);
   }
 
   // call redis
   let results = await batch.execAsync();
 
   // transform the structure
-  return results.map((result) => {
-    return {
-      id: parseInt(result.id),
-      type: parseInt(result.type),
-      openingHours: parseInt(result.openingHours),
-      services: result.services.split(',').map((val) => parseInt(val)),
-      name: result.name,
-      businessName: result.businessName,
-      phone: result.phone,
-      latitude: parseFloat(result.latitude),
-      longitude: parseFloat(result.longitude),
-      address: {
-        street: result['address.street'],
-        number: result['address.number'],
-        neighborhood: result['address.neighborhood'],
-        postalCode: result['address.postalCode'],
-        state: result['address.state'],
-        city: result['address.city'],
-        cityId: parseInt(result['address.city.id'])
-      }
+  return results.map(hash2model);
+}
+
+/**
+ * Transform a facility hash to the app model.
+ * @param  {Object} result Facility hash.
+ * @return {Object}        Data as app model.
+ */
+function hash2model(result) {
+  if (!result) {
+    return null;
+  }
+
+  return {
+    id: parseInt(result.id),
+    type: parseInt(result.type),
+    openingHours: parseInt(result.openingHours),
+    services: result.services.split(',').map((val) => parseInt(val)),
+    name: result.name,
+    businessName: result.businessName,
+    phone: result.phone,
+    latitude: parseFloat(result.latitude),
+    longitude: parseFloat(result.longitude),
+    address: {
+      street: result['address.street'],
+      number: result['address.number'],
+      neighborhood: result['address.neighborhood'],
+      postalCode: result['address.postalCode'],
+      state: result['address.state'],
+      city: result['address.city'],
+      cityId: parseInt(result['address.city.id'])
     }
-  });
+  }
 }
 
 /**
