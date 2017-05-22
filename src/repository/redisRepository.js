@@ -60,8 +60,7 @@ RedisRepository.getCities = (state) => {
  * Retrieves all the health fecilities that provide a service on a state.
  * @param  {Integer} serviceId Id of the target service.
  * @param  {String} state     Target state.
- * @param  {Integer} start     Start index.
- * @param  {Integer} end       End index.
+ * @param  {Integer} page     Page to be retrieved.
  * @return {Promise} Promise to resolve an array of facilities id's.
  */
 RedisRepository.getFacilitiesByServiceAndState = async(serviceId, state, page) => {
