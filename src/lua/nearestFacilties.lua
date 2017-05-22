@@ -30,7 +30,7 @@ end
 
 -- Returns empty on invalid ranges
 if (first >= last or first < 0) then
-  return {}
+  return {0, {}}
 end
 
 -- There is no way (that I know of) to paginate georadius directly, so we need to extract the subset manually

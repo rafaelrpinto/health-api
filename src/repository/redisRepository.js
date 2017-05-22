@@ -125,14 +125,10 @@ RedisRepository.getNearestFacilities = async(latitude, longitude, page) => {
   let result = await redisClient.send_commandAsync('eval', args);
 
   let count = result[0];
-  let rows = result[1];
-
-  if (rows) {
-    // converts the rows
-    rows = result[1].map((row) => {
-      return hash2model(replyToObject(row));
-    });
-  }
+  // converts the response objects
+  let rows = result[1].map((row) => {
+    return hash2model(replyToObject(row));
+  });
 
   return buildPaginatedResponse(count, page, rows);
 }
