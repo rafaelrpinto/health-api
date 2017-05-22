@@ -71,7 +71,7 @@ Retrieves all the medical services avaialble on the facilities.
 
 - GET /cities/{state}
 
-Retrieves all the cities within a state. Ex: /cities/RJ
+Retrieves all the cities within a state. Ex: `/cities/RJ`
 
 ```javascript
 [
@@ -93,7 +93,7 @@ Retrieves all the cities within a state. Ex: /cities/RJ
 
 - GET /facility/{id}
 
-Retrieves the details of a facility by it's id. Ex: /facility/5740576
+Retrieves the details of a facility by it's id. Ex: `/facility/5740576`
 
 ```javascript
 {
@@ -121,5 +121,33 @@ Retrieves the details of a facility by it's id. Ex: /facility/5740576
     "city": "ARCOVERDE",
     "cityId": 76
   }
+}
+```
+
+- GET /service/{service}/{state}/{page}
+
+Retrieves the facilities that provide a specific service on a state. All the requests must inform a page.
+Ex: `/service/1/RJ/1`
+
+```javascript
+{
+  "totalCount": 153,
+  "page": "1",
+  "pageSize": 10,
+  "rows": [...]
+}
+```
+
+- GET /service/{service}/{state}/{city}/{page}
+
+Retrieves the facilities that provide a specific service on a city. All the requests must inform a page.
+Ex: `/service/1/RJ/37/1`
+
+```javascript
+{
+  "totalCount": 65,
+  "page": "1",
+  "pageSize": 10,
+  "rows": [...]
 }
 ```
