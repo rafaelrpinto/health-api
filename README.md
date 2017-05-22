@@ -161,7 +161,7 @@ Ex: `/facility/nearest/-22.933380/-43.244348/1`
 
 ```javascript
 {
-  "totalCount": 9,
+  "totalCount": 692,
   "page": "1",
   "pageSize": 10,
   "rows": [...]
