@@ -2,6 +2,7 @@ let bunyan = require('bunyan');
 // project dependencies
 let repository = require('../repository/redisRepository')
 
+// log setup
 let log = bunyan.createLogger({name: 'enum-controller', stream: process.stdout});
 
 /**
@@ -64,8 +65,8 @@ async function getEnum(res, next, repositoryMethod, repositoryMethodArgs) {
     });
     res.json(result);
   } catch (err) {
-    res.send(500, err);
-    log.error(`Error executing '${repositoryMethod}'`, {err: err});
+    res.send(500, 'Internal error');
+    log.error(`Error retrieving enums by '${repositoryMethod}'`, {err: err});
   } finally {
     next();
   }
