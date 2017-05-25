@@ -8,6 +8,7 @@ let healthFacilityController = require('../controller/healthFacilityController')
  */
 module.exports = (server) => {
   // enums
+  server.get('/db_version', enumController.getDbVersion);
   server.get('/facility/types', enumController.getFacilityTypes);
   server.get('/facility/opening_hours', enumController.getOpeningHours);
   server.get('/facility/services', enumController.getServices);

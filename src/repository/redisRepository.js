@@ -133,6 +133,14 @@ RedisRepository.getNearestFacilities = async(latitude, longitude, page) => {
   return buildPaginatedResponse(count, page, rows);
 }
 
+/**
+ * Retreives the database version.
+ * @return {Promise} A promise to retrieve the db version.
+ */
+RedisRepository.getDbVersion = () => {
+  return redisClient.getAsync('db_version');
+}
+
 // ############ private functions ##############
 
 /*

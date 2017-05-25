@@ -5,6 +5,16 @@ By using Redis as our database we can take advantage of it's speed to create cos
 
 ## Routes
 
+- GET /db_version
+
+Retrieves the version of the database. Clients should use this value to determine if their cache is stale.
+
+```javascript
+{
+  "version": "1495712237519"
+}
+```
+
 - GET /facility/types
 
 Retrieves all the facility types.

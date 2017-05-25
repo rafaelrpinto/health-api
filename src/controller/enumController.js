@@ -51,6 +51,22 @@ EnumController.getNeighborhoods = (req, res, next) => {
 }
 
 /**
+ * Retrieves the database version.
+ * @type {Object} db version.
+ */
+EnumController.getDbVersion = async(req, res, next) => {
+  try {
+    let version = await repository.getDbVersion();
+    res.json({version});
+  } catch (err) {
+    res.send(500, 'Internal error');
+    log.error(`Error retrieving db version`, {err: err});
+  } finally {
+    next();
+  }
+}
+
+/**
  * Common function that requests for enum lists.
  * @param  {String}   repositoryMethod Repository method to be called.
  * @param  {Array}   repositoryMethodArgs Optional arguments to be passed to the repository.
