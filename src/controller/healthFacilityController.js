@@ -93,4 +93,23 @@ HealthFacilityController.getNearestFacilities = async(req, res, next) => {
   }
 }
 
+/**
+ * Finds the nearest facilities ids from a specific coordinate.
+ */
+HealthFacilityController.getNearestFacilitiesIds = async(req, res, next) => {
+  try {
+    if (isNaN(req.params.lat) || isNaN(req.params.long)) {
+      return res.send(400, 'Invalid parameters.');
+    }
+
+    let facilities = await repository.getNearestFacilitiesIds(req.params.lat, req.params.long);
+    res.json(facilities);
+  } catch (err) {
+    res.send(500, 'Internal error');
+    log.error(`Error retrieving facilities ids by location`, {err: err});
+  } finally {
+    next();
+  }
+}
+
 module.exports = HealthFacilityController;

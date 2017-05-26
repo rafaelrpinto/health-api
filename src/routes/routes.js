@@ -15,6 +15,7 @@ module.exports = (server) => {
   server.get('/cities/:state', enumController.getCities);
 
   //facilities
+  server.get('/facility/nearest/id/:lat/:long', healthFacilityController.getNearestFacilitiesIds);
   server.get('/facility/nearest/:lat/:long/:page', healthFacilityController.getNearestFacilities);
   server.get('/facility/:id', healthFacilityController.getFacility);
   server.get('/service/:service/:state/:page', healthFacilityController.getFacilitiesByServiceAndState);

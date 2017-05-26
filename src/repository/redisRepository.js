@@ -134,6 +134,18 @@ RedisRepository.getNearestFacilities = async(latitude, longitude, page) => {
 }
 
 /**
+ * Retrieves the ids of all facilities within a 2km raius of a coordinate.
+ * @return {Promise}           Promise to resolve the facilities according to the parameters.
+ */
+RedisRepository.getNearestFacilitiesIds = async(latitude, longitude) => {
+  let facilities = redisClient.georadiusAsync('geo_facilities', longitude, latitude, '2', 'km', 'WITHCOORD');
+  return facilities.map((facility) => {
+    return {id: facility[0], longitude: facility[1][0], latitude: facility[1][1]
+    }
+  });
+}
+
+/**
  * Retreives the database version.
  * @return {Promise} A promise to retrieve the db version.
  */

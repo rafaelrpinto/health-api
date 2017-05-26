@@ -177,3 +177,29 @@ Ex: `/facility/nearest/-22.933380/-43.244348/1`
   "rows": [...]
 }
 ```
+
+- GET /facility/nearest/id/{lat}/{long}
+
+Retrieves all the facility ids within 2km of the provided coordinates.
+Ex: `/facility/nearest/id/-22.933380/-43.244348`
+
+```javascript
+[
+  {
+    "id": "2270099",
+    "longitude": "-43.25493067502975464",
+    "latitude": "-22.94417046563879836"
+  },
+  {
+    "id": "3357988",
+    "longitude": "-43.24863821268081665",
+    "latitude": "-22.93962064115778432"
+  },
+  {
+    "id": "3503496",
+    "longitude": "-43.24863821268081665",
+    "latitude": "-22.93962064115778432"
+  },
+  ...
+]
+```
