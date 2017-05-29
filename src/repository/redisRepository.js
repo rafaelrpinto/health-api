@@ -6,6 +6,7 @@ let redisScripts = require('../lua/redisScripts');
 
 // Max items per page
 const PAGE_SIZE = 10;
+const SEARCH_RADIUS = 2;
 
 // async redis client
 Promise.promisifyAll(redis.RedisClient.prototype);
@@ -93,52 +94,38 @@ RedisRepository.getFacility = async(id) => {
 }
 
 /**
- * Retrieves the facilities closest to the informed coordinates.
- *
- * FIXME: This pagination is not very effective because redis has to go through all
- * elements of the set. But currently the geaoradius command does not have pagination.
- *
- * So this method at least does the whole processing in a single request and saves bandwidth
- * by enforcing pagination.
+ * Retrieves the full details of facilities closest to the informed coordinates.
  *
  * @param  {Number} latitude  Reference latitude.
  * @param  {Number} longitude Reference longitude.
- * @param  {Integer} page      Target page.
  * @return {Promise}           Promise to resolve the facilities according to the parameters.
  */
-RedisRepository.getNearestFacilities = async(latitude, longitude, page) => {
-  // pagination range
-  let interval = page2interval(page);
-
+RedisRepository.getNearestFacilities = async(latitude, longitude) => {
   //script keys / arguments
   let args = [1].concat("geo_facilities", [
     longitude,
     latitude,
-    5,
-    "km",
-    interval.start,
-    interval.end
+    SEARCH_RADIUS,
+    "km"
   ]);
   args.unshift(redisScripts['nearestFacilties']);
 
   // executes the script on redis
   let result = await redisClient.send_commandAsync('eval', args);
 
-  let count = result[0];
   // converts the response objects
-  let rows = result[1].map((row) => {
+  return result.map((row) => {
     return hash2model(replyToObject(row));
   });
 
-  return buildPaginatedResponse(count, page, rows);
 }
 
 /**
- * Retrieves the ids of all facilities within a 2km raius of a coordinate.
+ * Retrieves the ids of all facilities closest to the informed coordinates.
  * @return {Promise}           Promise to resolve the facilities according to the parameters.
  */
 RedisRepository.getNearestFacilitiesIds = async(latitude, longitude) => {
-  let facilities = redisClient.georadiusAsync('geo_facilities', longitude, latitude, '2', 'km', 'WITHCOORD');
+  let facilities = redisClient.georadiusAsync('geo_facilities', longitude, latitude, SEARCH_RADIUS, 'km', 'WITHCOORD');
   return facilities.map((facility) => {
     return {id: facility[0], longitude: facility[1][0], latitude: facility[1][1]
     }

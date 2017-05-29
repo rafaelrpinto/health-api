@@ -79,11 +79,11 @@ HealthFacilityController.getFacility = async(req, res, next) => {
  */
 HealthFacilityController.getNearestFacilities = async(req, res, next) => {
   try {
-    if (isNaN(req.params.lat) || isNaN(req.params.long) || isNaN(req.params.page)) {
+    if (isNaN(req.params.lat) || isNaN(req.params.long)) {
       return res.send(400, 'Invalid parameters.');
     }
 
-    let facilities = await repository.getNearestFacilities(req.params.lat, req.params.long, req.params.page);
+    let facilities = await repository.getNearestFacilities(req.params.lat, req.params.long);
     res.json(facilities);
   } catch (err) {
     res.send(500, 'Internal error');

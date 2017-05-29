@@ -164,18 +164,18 @@ Ex: `/service/1/RJ/37/1`
 }
 ```
 
-- GET /facility/nearest/{lat}/{long}/{page}
+- GET /facility/nearest/{lat}/{long}
 
-Retrieves nearest facilities from the provided coordinates. All the requests must inform a page.
-Ex: `/facility/nearest/-22.933380/-43.244348/1`
+Retrieves the complete details of the nearest facilities from the provided coordinates.
+Ex: `/facility/nearest/-22.933380/-43.244348`
 
 ```javascript
-{
-  "totalCount": 692,
-  "page": "1",
-  "pageSize": 10,
-  "rows": [...]
-}
+[
+  {...},
+  {...},
+  {...},
+  ...
+]
 ```
 
 - GET /facility/nearest/id/{lat}/{long}
