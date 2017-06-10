@@ -171,7 +171,32 @@ Ex: `/facility/nearest/-22.933380/-43.244348`
 
 ```javascript
 [
-  {...},
+  {
+    "id": 5740576,
+    "type": 10,
+    "openingHours": 2,
+    "services": [
+      18,
+      27,
+      60,
+      38,
+      23
+    ],
+    "name": "UBSF VILA SAO JOSE SAO GERALDO",
+    "businessName": "FUNDO MUNICIPAL DE SAUDE DE ARCOVERDE",
+    "phone": "87 38219010",
+    "latitude": -8.4180273,
+    "longitude": -37.0532275,
+    "address": {
+      "street": "AVENIDA DOM PEDRO II",
+      "number": "S/N",
+      "neighborhood": "SAO GERALDO",
+      "postalCode": "56506460",
+      "state": "PE",
+      "city": "ARCOVERDE",
+      "cityId": 76
+    }
+  },
   {...},
   {...},
   ...
