@@ -3,6 +3,8 @@ Node.js api with methods for searching health facilities based on government dat
 
 By using Redis as our database we can take advantage of it's speed to create cost-effective apis / apps that can be accessed by a large number of clients requiring as few resources as possible. See more in [How fast is redis?](https://redis.io/topics/benchmarks)
 
+This project was built using Node 8.1.0.
+
 ## Routes
 
 - GET /db_version

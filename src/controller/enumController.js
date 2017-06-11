@@ -30,7 +30,7 @@ async function getEnum(res, next, repositoryMethod, repositoryMethodArgs) {
 /**
  * Controller that handles requests for enum lists.
  */
-class EnumController {}
+const EnumController = {};
 
 /**
  * Route that retreives all the facility types.

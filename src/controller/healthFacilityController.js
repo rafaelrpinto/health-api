@@ -8,7 +8,7 @@ let log = bunyan.createLogger({name: 'health-facility-controller', stream: proce
 /**
  * Controller that handles facility retrieval requests.
  */
-class HealthFacilityController {}
+const HealthFacilityController = {};
 
 /**
  * Finds the fecilities which provide a specific service on a specific state.

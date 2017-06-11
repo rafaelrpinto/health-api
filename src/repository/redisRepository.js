@@ -148,7 +148,7 @@ async function getFacilities(key, page) {
 /**
  * Repository that retrieves the data from Redis.
  */
-class RedisRepository {}
+const RedisRepository = {};
 
 /**
  * Retrieves all the facility type enums.
